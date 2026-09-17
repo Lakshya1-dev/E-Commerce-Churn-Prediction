@@ -2,6 +2,29 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
+
+class days_between:
+    """Calculate the number of whole days between two date-like values."""
+
+    def __init__(self, start_date, end_date):
+        self.start_date = self._as_datetime(start_date)
+        self.end_date = self._as_datetime(end_date)
+
+    @staticmethod
+    def _as_datetime(value):
+        if isinstance(value, str):
+            return datetime.fromisoformat(value)
+        return value
+
+    def calculate(self):
+        """Return the signed number of whole days from start to end."""
+        return (self.end_date - self.start_date).days
+
+    @classmethod
+    def between(cls, start_date, end_date):
+        return cls(start_date, end_date).calculate()
+
+
 def generate_ecommerce_data():
     np.random.seed(42)  # for reproducibility
 
@@ -70,11 +93,12 @@ def generate_ecommerce_data():
     data = []
     start_date = datetime(2024, 1, 1)
     end_date = datetime(2026, 1, 1)
-    days_between = (end_date - start_date).days
+    period_days = days_between.between(start_date, end_date)
 
     for cust_id, n in zip(customer_ids, counts):
         # Generate n random dates within the 2-year period
-        random_days = np.random.randint(0, days_between, size=n)
+        n = max(1, int(n))  # Forces n to be a positive integer
+        random_days = np.random.randint(0, period_days, size=n)
         order_dates = [start_date + timedelta(days=int(d)) for d in random_days]
         # Sort dates for each customer (optional, but realistic)
         order_dates.sort()
