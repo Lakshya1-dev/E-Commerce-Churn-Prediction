@@ -1,0 +1,7 @@
+# Requirements for E-Commerce Customer Churn Prediction
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+# sqlite3 is built-in, so no need to install
